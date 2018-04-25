@@ -1,4 +1,5 @@
 import os
+import random
 import requests
 import argparse
 import json
@@ -69,12 +70,20 @@ def _strains():
         print("Modified strains file stored as strains.p")
     return strains
 
-def enterobase(c=None):
+def enterobase(c=None, random=False):
     '''
     Downloads all the E.coli genomes from Enterobase.
     '''
     strains = _strains()
     dl_folder = 'enterobase_db'
+
+    # If a specific number of genomes is selected, create a sublist to iter.
+    if c:
+        # If random selection.
+        if random:
+            strains = random.sample(strains, c)
+        else:
+            strains = strains[:c]
 
     if not os.path.exists(dl_folder):
         os.makedirs(dl_folder)
@@ -88,11 +97,6 @@ def enterobase(c=None):
                 try:
                     get(identifier, barcode, dl_folder)
                     i = 10
-                    # If a max # genomes was supplied.
-                    if c and c==1:
-                        return 0
-                    elif c:
-                        c -= 1
                 except:
                     print('sleeping ' + str(i) + ' min')
                     sleep(60 * i)
@@ -108,6 +112,13 @@ if __name__ == '__main__':
         required=False,
         type=int
     )
+    parser.add_argument(
+        "--random",
+        help="Randomly pick genomes (default=False, must be used with -c)",
+        required=False,
+        action='store_true',
+        default=False
+    )
     args = parser.parse_args()
 
-    enterobase(args.c)
+    enterobase(args.c, args.random)
