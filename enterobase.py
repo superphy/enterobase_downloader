@@ -70,7 +70,7 @@ def _strains():
         print("Modified strains file stored as strains.p")
     return strains
 
-def enterobase(c=None, random=False):
+def enterobase(c=None, r=False):
     '''
     Downloads all the E.coli genomes from Enterobase.
     '''
@@ -80,7 +80,7 @@ def enterobase(c=None, random=False):
     # If a specific number of genomes is selected, create a sublist to iter.
     if c:
         # If random selection.
-        if random:
+        if r:
             strains = random.sample(strains, c)
         else:
             strains = strains[:c]
@@ -113,7 +113,7 @@ if __name__ == '__main__':
         type=int
     )
     parser.add_argument(
-        "--random",
+        "-r",
         help="Randomly pick genomes (default=False, must be used with -c)",
         required=False,
         action='store_true',
@@ -121,4 +121,4 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    enterobase(args.c, args.random)
+    enterobase(args.c, args.r)
